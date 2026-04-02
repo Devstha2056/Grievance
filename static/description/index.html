@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Grievance</title>
+    <style>
+        :root {
+            --ink: #1c2a39;
+            --muted: #586779;
+            --panel: #f7f4ed;
+            --line: #d7d0c2;
+            --accent: #0e7c66;
+            --accent-soft: #d7efe8;
+            --warm: #c7722d;
+            --page: linear-gradient(180deg, #fffdf8 0%, #f4efe5 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+            color: var(--ink);
+            background: var(--page);
+            line-height: 1.6;
+        }
+
+        .wrap {
+            width: min(1080px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        .hero {
+            padding: 32px 0 20px;
+        }
+
+        .hero-card {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 24px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid rgba(215, 208, 194, 0.9);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 18px 50px rgba(28, 42, 57, 0.08);
+        }
+
+        .hero-card img {
+            width: 120px;
+            height: 120px;
+            display: block;
+            border-radius: 28px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin: 0;
+            line-height: 1.15;
+        }
+
+        h1 {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .pill {
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .banner {
+            margin: 18px 0 32px;
+        }
+
+        .banner img {
+            width: 100%;
+            display: block;
+            border-radius: 24px;
+            border: 1px solid rgba(215, 208, 194, 0.9);
+            box-shadow: 0 14px 40px rgba(28, 42, 57, 0.08);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 22px;
+        }
+
+        .card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 18px;
+            color: var(--muted);
+        }
+
+        li + li {
+            margin-top: 8px;
+        }
+
+        .footer {
+            padding: 10px 0 36px;
+            font-size: 14px;
+        }
+
+        .footer strong {
+            color: var(--warm);
+        }
+
+        @media (max-width: 760px) {
+            .hero-card,
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-card img {
+                width: 96px;
+                height: 96px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <section class="hero">
+            <div class="hero-card">
+                <img src="icon.png" alt="Employee Grievance icon">
+                <div>
+                    <h1>Employee Grievance</h1>
+                    <p>
+                        A dedicated HR workflow for receiving, investigating, approving, and closing employee grievances without mixing the process into the broader HR dashboard.
+                    </p>
+                    <div class="pill-row">
+                        <span class="pill">Case Intake</span>
+                        <span class="pill">Interview Logs</span>
+                        <span class="pill">Approval Signatures</span>
+                        <span class="pill">Evidence Tracking</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="banner">
+            <img src="banner.png" alt="Employee Grievance cover image">
+        </section>
+
+        <section class="grid">
+            <article class="card">
+                <h2>What It Solves</h2>
+                <p>
+                    This addon gives grievance handling its own controlled workspace so HR teams can track sensitive cases with clearer ownership, status progression, and approval history.
+                </p>
+            </article>
+            <article class="card">
+                <h2>Key Workflow</h2>
+                <p>
+                    Employees can submit grievances, HR acknowledges and assigns them, investigators document findings, and managers finalize resolutions with explicit signatures and notification steps.
+                </p>
+            </article>
+        </section>
+
+        <section class="grid">
+            <article class="card">
+                <h3>Core Features</h3>
+                <ul>
+                    <li>Standalone grievance records with priority, confidentiality, deadlines, and involved employees.</li>
+                    <li>Assignment workflow from draft through investigation, resolution, closure, or rejection.</li>
+                    <li>Interview and investigation tabs with attachment support for supporting evidence and documents.</li>
+                    <li>Outcome, disciplinary action, corrective action, and complainant communication tracking.</li>
+                </ul>
+            </article>
+            <article class="card">
+                <h3>HR Controls</h3>
+                <ul>
+                    <li>Mail chatter integration with logged status updates and activities.</li>
+                    <li>Completed activity feedback copied into interview records for auditability.</li>
+                    <li>Investigating officer and HR manager signatures recorded separately.</li>
+                    <li>Search, list, kanban, and grouped reporting views for daily case handling.</li>
+                </ul>
+            </article>
+        </section>
+
+        <p class="footer">
+            <strong>Compatible with Odoo 19</strong> and designed for organizations that need a clearer and more defensible grievance resolution process.
+        </p>
+    </div>
+</body>
+</html>

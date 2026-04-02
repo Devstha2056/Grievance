@@ -4,11 +4,20 @@
     'name': 'Employee Grievance',
     'version': '19.0.1.0.0',
     'summary': 'Standalone grievance management for employees and HR',
-    'description': 'Separates grievance management from the HRMS dashboard into its own addon.',
+    'description': """
+<section>
+    <h2>Employee Grievance</h2>
+    <p>
+        Standalone grievance management for employees and HR teams, covering intake,
+        assignment, investigation, interview tracking, approvals, and resolution follow-up.
+    </p>
+</section>
+""",
     'category': 'Human Resources',
     'author': 'Custom',
     'license': 'LGPL-3',
     'depends': ['hr', 'mail'],
+    'images': ['static/description/banner.png', 'static/description/thumbnail.png'],
     'data': [
         'security/ir.model.access.csv',
         'security/grievance_rules.xml',
