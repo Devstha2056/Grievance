@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="grievance_ticket_list" model="ir.ui.view">
+        <field name="name">employee.grievance.list</field>
+        <field name="model">employee.grievance</field>
+        <field name="arch" type="xml">
+            <list string="Grievance Tickets"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state in ('submitted','acknowledged','assigned','investigation')"
+                  decoration-success="state == 'resolved'"
+                  decoration-muted="state in ('closed','rejected')">
+                <field name="name" string="Reference"/>
+                <field name="employee_id" string="Reported By" optional="show"/>
+                <field name="grievance_type" string="Category"/>
+                <field name="priority" widget="priority" optional="show"/>
+                <field name="assigned_to" string="Assigned To" widget="many2many_tags" optional="show"/>
+                <field name="deadline" string="Deadline" optional="show"/>
+                <field name="confidentiality_level" string="Confidentiality" optional="hide"/>
+                <field name="incident_date" string="Incident Date"/>
+                <field name="state" string="Status" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="grievance_ticket_search" model="ir.ui.view">
+        <field name="name">employee.grievance.search</field>
+        <field name="model">employee.grievance</field>
+        <field name="arch" type="xml">
+            <search string="Search Grievances">
+                <field name="name" string="Ticket Title"/>
+                <field name="employee_id" string="Employee"/>
+                <field name="grievance_type" string="Category"/>
+                <separator/>
+                <filter string="My Grievances" name="my_grievances" domain="[('employee_id.user_id','=',uid)]"/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state','in',['submitted','acknowledged','assigned','investigation'])]"/>
+                <filter string="Resolved" name="resolved" domain="[('state','=','resolved')]"/>
+                <filter string="Closed" name="closed" domain="[('state','=','closed')]"/>
+                <filter string="Rejected" name="rejected" domain="[('state','=','rejected')]"/>
+                <separator/>
+                <filter string="High Priority" name="high_priority" domain="[('priority','in',['high','critical'])]"/>
+                <filter string="Overdue" name="overdue" domain="[('deadline','&lt;',context_today().strftime('%Y-%m-%d')),('state','not in',['resolved','closed','rejected'])]"/>
+                <group>
+                    <filter string="Status" name="group_state" context="{'group_by':'state'}"/>
+                    <filter string="Category" name="group_type" context="{'group_by':'grievance_type'}"/>
+                    <filter string="Priority" name="group_priority" context="{'group_by':'priority'}"/>
+                    <filter string="Employee" name="group_employee" context="{'group_by':'employee_id'}"/>
+                    <filter string="Assigned To" name="group_assigned" context="{'group_by':'assigned_to'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="grievance_ticket_kanban" model="ir.ui.view">
+        <field name="name">employee.grievance.kanban</field>
+        <field name="model">employee.grievance</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="employee_id"/>
+                <field name="grievance_type"/>
+                <field name="priority"/>
+                <field name="assigned_to"/>
+                <field name="deadline"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                <div class="o_kanban_tags_section"><field name="priority" widget="priority"/></div>
+                                <ul>
+                                    <li t-if="record.employee_id.value"><b>Reporter: </b><t t-esc="record.employee_id.value"/></li>
+                                    <li t-if="record.grievance_type.value"><b>Type: </b><t t-esc="record.grievance_type.value"/></li>
+                                    <li t-if="record.assigned_to.raw_value and record.assigned_to.raw_value.length"><b>Assigned: </b><field name="assigned_to" widget="many2many_tags"/></li>
+                                    <li t-if="record.deadline.value"><b>Deadline: </b><t t-esc="record.deadline.value"/></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="grievance_ticket_form" model="ir.ui.view">
+        <field name="name">employee.grievance.form</field>
+        <field name="model">employee.grievance</field>
+        <field name="arch" type="xml">
+            <form string="Grievance Ticket">
+                <header>
+                    <button name="action_submit" string="Submit" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_acknowledge" string="Acknowledge" type="object" class="btn-primary" groups="hr.group_hr_manager" invisible="state != 'submitted'"/>
+                    <button name="action_assign" string="Assign" type="object" class="btn-primary" groups="hr.group_hr_manager" invisible="state != 'acknowledged'"/>
+                    <button name="action_investigate" string="Start Investigation" type="object" class="btn-primary" groups="hr.group_hr_manager" invisible="state != 'assigned'"/>
+                    <button name="action_reassign" string="Reassign" type="object" class="btn-secondary" groups="hr.group_hr_manager" invisible="state not in ('assigned','investigation')"/>
+                    <button name="action_resolve" string="Mark Resolved" type="object" class="btn-success" groups="hr.group_hr_manager" invisible="state != 'investigation'"/>
+                    <button name="action_close" string="Close/Finished" type="object" class="btn-secondary" groups="hr.group_hr_manager" invisible="state != 'resolved'"/>
+                    <button name="action_reject" string="Reject" type="object" class="btn-danger" groups="hr.group_hr_manager" invisible="state not in ('submitted','acknowledged')" confirm="Are you sure you want to reject this grievance?"/>
+                    <button name="action_reset_draft" string="Reset to Draft" type="object" class="btn-secondary" groups="hr.group_hr_manager" invisible="state != 'rejected'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,acknowledged,assigned,investigation,resolved,closed" readonly="1"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Grievance Details">
+                            <field name="grievance_type" readonly="state in ('resolved','closed','rejected')"/>
+                            <field name="incident_date" readonly="state in ('resolved','closed','rejected')"/>
+                            <field name="incident_location" readonly="state in ('resolved','closed','rejected')"/>
+                            <field name="priority" widget="priority" readonly="state in ('resolved','closed','rejected')"/>
+                            <field name="confidentiality_level" readonly="state in ('resolved','closed','rejected')"/>
+                            <field name="deadline" groups="hr.group_hr_manager" readonly="state in ('resolved','closed','rejected')"/>
+                        </group>
+                        <group string="Reporter &amp; Assignment">
+                            <field name="is_anonymous" readonly="state in ('resolved','closed','rejected')"/>
+                            <field name="employee_id" invisible="is_anonymous == True" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="department_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="persons_involved_ids" widget="many2many_tags" readonly="state in ('resolved','closed','rejected')" options="{'no_create': True}"/>
+                            <field name="assigned_to" groups="hr.group_hr_manager" widget="many2many_tags" invisible="state not in ('acknowledged','assigned','investigation','resolved','closed')" readonly="state in ('resolved','closed','rejected')" options="{'no_create': True}"/>
+                            <field name="resolution_date" invisible="state not in ('resolved','closed')"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Confidential Notes" name="confidential_notes_page">
+                            <field name="confidential_note" placeholder="Add any confidential notes here…" readonly="state in ('resolved','closed','rejected')" nolabel="1"/>
+                            <field name="supporting_evidence_ids" widget="many2many_binary" string="Supporting Evidence" readonly="state in ('resolved','closed','rejected')" nolabel="1"/>
+                        </page>
+                        <page string="Investigation Notes" name="investigation_notes_page" invisible="state not in ('investigation','resolved','closed')">
+                            <field name="investigation_notes" placeholder="Document investigation findings…" readonly="state in ('resolved','closed','rejected')" nolabel="1"/>
+                            <field name="investigation_document_ids" widget="many2many_binary" string="Documents" readonly="state in ('resolved','closed','rejected')" nolabel="1"/>
+                        </page>
+                        <page string="Interview Notes" name="interview_notes_page" invisible="state not in ('investigation','resolved','closed')">
+                            <field name="interview_notes" placeholder="Record interview findings…" readonly="state in ('resolved','closed','rejected')" nolabel="1"/>
+                            <field name="interview_document_ids" widget="many2many_binary" string="Documents" readonly="state in ('resolved','closed','rejected')" nolabel="1"/>
+                        </page>
+                        <page string="Rejection Reason" name="rejection_reason_page" invisible="state != 'rejected'">
+                            <field name="rejection_reason" placeholder="Enter the reason for rejection…" nolabel="1"/>
+                        </page>
+                        <page string="Resolution Summary" name="resolution_summary_page" invisible="state not in ('resolved','closed')">
+                            <div class="row">
+                                <div class="col-8">
+                                    <group string="Resolution Summary">
+                                        <field name="resolution_outcome_id" required="state in ('resolved','closed')"/>
+                                        <field name="resolution_description" placeholder="Describe how the grievance was resolved…" readonly="state == 'closed'"/>
+                                        <field name="disciplinary_action_id" />
+                                        <field name="corrective_actions" placeholder="List corrective actions required…" readonly="state == 'closed'"/>
+                                    </group>
+                                </div>
+                                <div class="col-4">
+                                    <div class="card mb-3">
+                                        <div class="card-header fw-bold">Approval Signatures</div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <div class="text-muted small fw-bold mb-1">INVESTIGATING OFFICER</div>
+                                                <field name="investigating_officer_id" nolabel="1" options="{'no_create': True}" readonly="approval_state != 'pending'"/>
+                                                <div class="border rounded p-3 mt-2 text-center bg-light" style="min-height:80px;">
+                                                    <div class="text-muted small">Digital Signature</div>
+                                                    <field name="officer_signature" widget="signature" nolabel="1" readonly="approval_state != 'pending'"/>
+                                                    <div class="fst-italic text-secondary fs-6 mt-2" invisible="not investigating_officer_id">
+                                                        <field name="investigating_officer_id" nolabel="1" readonly="1"/>
+                                                    </div>
+                                                    <div class="text-muted small mt-1" invisible="not officer_signed_date">
+                                                        Signed: <field name="officer_signed_date" nolabel="1" readonly="1"/>
+                                                    </div>
+                                                </div>
+                                                <button name="action_officer_sign" string="Sign as Investigating Officer" type="object" class="btn btn-primary w-100 mt-2" groups="hr.group_hr_manager" invisible="approval_state != 'pending'"/>
+                                            </div>
+                                            <hr/>
+                                            <div class="mb-2">
+                                                <div class="text-muted small fw-bold mb-1">HR MANAGER APPROVAL</div>
+                                                <field name="hr_manager_approval_id" nolabel="1" options="{'no_create': True}" readonly="approval_state == 'approved'"/>
+                                                <div class="border rounded p-3 mt-2 text-center" style="min-height:80px;">
+                                                    <div invisible="approval_state == 'approved'">
+                                                        <div class="text-warning small">Awaiting Approval Signature</div>
+                                                        <field name="hr_manager_signature" widget="signature" nolabel="1" readonly="approval_state != 'officer_signed'"/>
+                                                    </div>
+                                                    <div invisible="approval_state != 'approved'">
+                                                        <div class="text-muted small">Digital Signature</div>
+                                                        <field name="hr_manager_signature" widget="signature" nolabel="1" readonly="1"/>
+                                                        <div class="fst-italic text-secondary fs-6 mt-2"><field name="hr_manager_approval_id" nolabel="1" readonly="1"/></div>
+                                                        <div class="text-muted small mt-1">Signed: <field name="hr_manager_signed_date" nolabel="1" readonly="1"/></div>
+                                                    </div>
+                                                </div>
+                                                <field name="approval_state" readonly="1" widget="badge" class="mt-2" decoration-warning="approval_state == 'pending'" decoration-info="approval_state == 'officer_signed'" decoration-success="approval_state == 'approved'"/>
+                                                <button name="action_hr_manager_approve" string="Approve as HR Manager" type="object" class="btn btn-success w-100 mt-2" groups="hr.group_hr_manager" invisible="approval_state != 'officer_signed'"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+                        <page string="Interview Records" name="interview_records_page" invisible="state not in ('investigation','resolved','closed')">
+                            <field name="interview_log_ids" nolabel="1" readonly="1">
+                                <list string="Completed Activities" create="0" delete="0" edit="0">
+                                    <field name="activity_type_id" string="Activity Type"/>
+                                    <field name="summary" string="Summary"/>
+                                    <field name="user_id" string="Done By"/>
+                                    <field name="date_done" string="Completed On"/>
+                                    <field name="feedback" string="Feedback"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_grievance_ticket" model="ir.actions.act_window">
+        <field name="name">Grievance</field>
+        <field name="res_model">employee.grievance</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="grievance_ticket_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No grievance tickets yet.</p>
+            <p>Submit a grievance to report a workplace concern or incident.</p>
+        </field>
+    </record>
+
+    <menuitem id="action_grievance_ticket_menu"
+              name="Grievances"
+              parent="hr.menu_hr_root"
+              action="action_grievance_ticket"
+              sequence="25"
+              groups="base.group_user"/>
+</odoo>

@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_employee_grievance,employee.grievance,model_employee_grievance,base.group_user,1,1,1,1
+access_employee_grievance_type,employee.grievance.type,model_employee_grievance_type,base.group_user,1,0,0,0
+access_employee_grievance_type_manager,employee.grievance.type.manager,model_employee_grievance_type,hr.group_hr_manager,1,1,1,1
+access_hr_grievance_policy_tag,hr.grievance.policy.tag,model_hr_grievance_policy_tag,base.group_user,1,0,0,0
+access_hr_grievance_policy_tag_manager,hr.grievance.policy.tag.manager,model_hr_grievance_policy_tag,hr.group_hr_manager,1,1,1,1
+access_grievance_interview_log,employee.grievance.interview.log,model_employee_grievance_interview_log,base.group_user,1,0,0,0
+access_grievance_interview_log_manager,employee.grievance.interview.log.manager,model_employee_grievance_interview_log,hr.group_hr_manager,1,1,1,1
+access_grievance_resolution_outcome_user,employee.grievance.resolution.outcome.user,model_employee_grievance_resolution_outcome,base.group_user,1,0,0,0
+access_grievance_resolution_outcome_manager,employee.grievance.resolution.outcome.manager,model_employee_grievance_resolution_outcome,hr.group_hr_manager,1,1,1,1
+access_grievance_disciplinary_action_user,employee.grievance.disciplinary.action.user,model_employee_grievance_disciplinary_action,base.group_user,1,0,0,0
+access_grievance_disciplinary_action_manager,employee.grievance.disciplinary.action.manager,model_employee_grievance_disciplinary_action,hr.group_hr_manager,1,1,1,1

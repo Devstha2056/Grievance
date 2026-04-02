@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_employee_grievance" model="ir.sequence">
+            <field name="name">Employee Grievance</field>
+            <field name="code">employee.grievance</field>
+            <field name="prefix">GRV/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="grievance_resolution_outcome_substantiated_action_taken" model="employee.grievance.resolution.outcome">
+            <field name="name">Substantiated - Action Taken</field>
+            <field name="code">substantiated_action_taken</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="grievance_resolution_outcome_substantiated_no_action" model="employee.grievance.resolution.outcome">
+            <field name="name">Substantiated - No Further Action</field>
+            <field name="code">substantiated_no_action</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="grievance_resolution_outcome_unsubstantiated" model="employee.grievance.resolution.outcome">
+            <field name="name">Unsubstantiated</field>
+            <field name="code">unsubstantiated</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="grievance_resolution_outcome_inconclusive" model="employee.grievance.resolution.outcome">
+            <field name="name">Inconclusive</field>
+            <field name="code">inconclusive</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="grievance_resolution_outcome_withdrawn" model="employee.grievance.resolution.outcome">
+            <field name="name">Withdrawn by Complainant</field>
+            <field name="code">withdrawn</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <record id="grievance_disciplinary_action_none" model="employee.grievance.disciplinary.action">
+            <field name="name">None</field>
+            <field name="code">none</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="grievance_disciplinary_action_verbal_warning" model="employee.grievance.disciplinary.action">
+            <field name="name">Verbal Warning</field>
+            <field name="code">verbal_warning</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="grievance_disciplinary_action_written_warning" model="employee.grievance.disciplinary.action">
+            <field name="name">Formal Written Warning</field>
+            <field name="code">written_warning</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="grievance_disciplinary_action_suspension" model="employee.grievance.disciplinary.action">
+            <field name="name">Suspension</field>
+            <field name="code">suspension</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="grievance_disciplinary_action_termination" model="employee.grievance.disciplinary.action">
+            <field name="name">Termination</field>
+            <field name="code">termination</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="grievance_disciplinary_action_other" model="employee.grievance.disciplinary.action">
+            <field name="name">Other</field>
+            <field name="code">other</field>
+            <field name="sequence">60</field>
+        </record>
+    </data>
+</odoo>
